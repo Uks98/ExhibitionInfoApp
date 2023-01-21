@@ -41,7 +41,7 @@ class MainInfoPage extends StatelessWidget {
   Widget _scrollingList(ScrollController sc) {
     return GetX<NormalInfoController>(
       builder: (controller) {
-        return ListView.builder(
+        return ListView.separated(
           controller: sc,
           itemCount: _normalInfoController.mainExhibitionList.length,
           itemBuilder: (BuildContext context, int i) {
@@ -56,12 +56,15 @@ class MainInfoPage extends StatelessWidget {
                 endDay: exIndex.endDay.toString(),
               ),
             );
-          },
+          }, separatorBuilder: (BuildContext context, int index) {
+            return Divider(indent: 10,endIndent: 10,thickness: 1,);
+        },
         );
       }
     );
   }
 
+  //리스트 뷰로 그려지는 아이템
   Widget MainExhibitionView(
       {required String imageUrl,
       required String name,
