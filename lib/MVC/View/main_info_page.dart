@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:seoul_exhibition_info/Design/ColorBox.dart';
 import 'package:seoul_exhibition_info/Design/font.dart';
 import 'package:seoul_exhibition_info/MVC/Controller/normalInfoController.dart';
+import 'package:seoul_exhibition_info/MVC/Model/location_model.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MainInfoPage extends StatelessWidget {

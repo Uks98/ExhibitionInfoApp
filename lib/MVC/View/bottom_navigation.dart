@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:seoul_exhibition_info/MVC/Controller/map_controller.dart';
 import 'package:seoul_exhibition_info/MVC/Controller/normalInfoController.dart';
 import 'package:seoul_exhibition_info/MVC/View/bottom_navigation.dart';
 import 'package:seoul_exhibition_info/MVC/View/main_info_page.dart';
@@ -24,6 +25,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   int _currentIndex = 0; // 바텀 네비게이션 현재 index
   List<Widget> appPages = [
     MainInfoPage(),
+    LocationPage(),
     Text("data"),
     Text("data"),
   ]; // 앱 화면들
