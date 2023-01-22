@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:seoul_exhibition_info/Design/ColorBox.dart';
 import 'package:seoul_exhibition_info/Design/font.dart';
+import 'package:seoul_exhibition_info/MVC/Controller/map_controller.dart';
 import 'package:seoul_exhibition_info/MVC/Controller/normalInfoController.dart';
 import 'package:seoul_exhibition_info/MVC/Model/location_model.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -16,14 +18,10 @@ class MainInfoPage extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            width: 400,
-            height: 600,
-            color: Colors.black,
-          ),
-          ElevatedButton(onPressed: (){
-            _normalInfoController.getExhibitionData(startDay: "20221118", endDay: "20230117", place: "부산", keyword: "");
-          }, child: Text("s")),
+         // LocationPage(),
+          // ElevatedButton(onPressed: (){
+          //   _normalInfoController.getExhibitionData(startDay: "20221118", endDay: "20230117", place: "부산", keyword: "");
+          // }, child: Text("s")),
           SlidingUpPanel(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
@@ -113,5 +111,34 @@ class MainInfoPage extends StatelessWidget {
         ],
       ),
     );
+  }
+  Widget MapWidget(context){
+    return
+        Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height - 60,
+                  child: latitude != null ?GoogleMap(
+                    // onCameraMove: ,
+                    //circles: circles,
+                    //내 위치 주변으로 원 둘레 생성
+                    myLocationEnabled: false,
+                    // 내 위치 활성화
+                    mapType: MapType.normal,
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(latitude, longitude),
+                      zoom: 13,
+                    ),
+                    markers: _markers.values.toSet(),
+                  ) : Center(child: CircularProgressIndicator(),),
+                ),
+              ],
+            )
+          ],
+        );
   }
 }

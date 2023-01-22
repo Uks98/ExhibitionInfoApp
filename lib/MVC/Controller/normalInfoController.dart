@@ -20,7 +20,7 @@ class NormalInfoController extends GetxController{
     final Xml2Json xml2Json = Xml2Json();
     try {
       var response = await http.get(Uri.parse(url));
-      print("uri parse 결과 : ${response}");
+
       xml2Json.parse(utf8.decode(response.bodyBytes));
       var jsonString = xml2Json.toParker();
       return jsonDecode(jsonString);
