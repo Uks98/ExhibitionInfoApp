@@ -48,6 +48,10 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   #시간 데이터 format
   intl:
+  #neumorphic 버튼 디자인
+  flutter_neumorphic: ^3.2.0
+  #datepicker
+  syncfusion_flutter_datepicker: ^20.4.44
 dev_dependencies:
   flutter_test:
     sdk: flutter

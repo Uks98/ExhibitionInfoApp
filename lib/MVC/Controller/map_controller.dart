@@ -1,13 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:seoul_exhibition_info/MVC/Model/ExhibitionData.dart' as exhibitionData;
 import 'package:seoul_exhibition_info/MVC/Model/ExhibitionData.dart';
 import 'package:seoul_exhibition_info/MVC/Model/location_model.dart';
 
-class LocationController extends GetxController{
+class LocationPage extends StatefulWidget {
+  const LocationPage({Key? key}) : super(key: key);
+
+  @override
+  State<LocationPage> createState() => _LocationPageState();
+}
+
+class _LocationPageState extends State<LocationPage> {
   int _count = 0;
   final Map<String, Marker> _markers = {};
   String get keyword => this.keyword;
@@ -32,6 +38,7 @@ class LocationController extends GetxController{
       "lib/map_marker/search.png",
     ); //구글 맵 마커 변경 변수
     final googleOffices1 = await exhibitionData.getGoogleOffices2();
+    setState(() {
       _markers.clear();
       for (final office in googleOffices1.offices1!) {
         final marker = Marker(
@@ -43,29 +50,19 @@ class LocationController extends GetxController{
         );
         _markers[(_count += 1).toString()] = marker;
       }
+    }
     );
   }
-}
 
-class LocationPage extends StatefulWidget {
-  const LocationPage({Key? key}) : super(key: key);
-
-  @override
-  State<LocationPage> createState() => _LocationPageState();
-}
-
-class _LocationPageState extends State<LocationPage> {
-
-
-  Set<Circle> circles = Set.from([
-    Circle(
-      fillColor: Colors.orange.shade100.withOpacity(0.5),
-      strokeColor: Colors.blue.shade100.withOpacity(0.1),
-      circleId: CircleId(DateTime.now().microsecondsSinceEpoch.toString()),
-      center: LatLng(LocationClass.latitude, LocationClass.longitude),
-      radius: 20000,
-    )
-  ]);
+  // Set<Circle> circles = Set.from([
+  //   Circle(
+  //     fillColor: Colors.orange.shade100.withOpacity(0.5),
+  //     strokeColor: Colors.blue.shade100.withOpacity(0.1),
+  //     circleId: CircleId(DateTime.now().microsecondsSinceEpoch.toString()),
+  //     center: LatLng(LocationClass.latitude, LocationClass.longitude),
+  //     radius: 20000,
+  //   )
+  // ]);
 
   @override
   void initState() {
@@ -78,6 +75,31 @@ class _LocationPageState extends State<LocationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return
+    return Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height - 60,
+                  child: latitude != null ?GoogleMap(
+                    // onCameraMove: ,
+                    //circles: circles,
+                    //내 위치 주변으로 원 둘레 생성
+                    myLocationEnabled: false,
+                    // 내 위치 활성화
+                    mapType: MapType.normal,
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(latitude, longitude),
+                      zoom: 13,
+                    ),
+                    markers: _markers.values.toSet(),
+                  ) : Center(child: CircularProgressIndicator(),),
+                ),
+              ],
+            )
+          ],
+        );
   }
 }
