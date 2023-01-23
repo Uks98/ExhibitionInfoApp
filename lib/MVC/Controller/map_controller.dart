@@ -18,11 +18,8 @@ class _LocationPageState extends State<LocationPage> {
   final Map<String, Marker> _markers = {};
   String get keyword => this.keyword;
   List<Exhibition> locationData = []; // Futuer list<LocationMapData>에서 반환한 리스트 받아오기
-  int _locationCount = 0;
   double latitude = LocationClass.latitude;
   double longitude = LocationClass.longitude;
-  //LocationClass locations = LocationClass();
-  //var googleOffices1;
   GoogleMapController? googleMapController;
   Completer<GoogleMapController> _completer = Completer(); //카메라 위치를 바꾸기 위한 변수
   Future<void> animateTo(double lat, double lng) async {
@@ -81,7 +78,7 @@ class _LocationPageState extends State<LocationPage> {
               children: [
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height - 60,
+                  height: 400,
                   child: latitude != null ?GoogleMap(
                     // onCameraMove: ,
                     //circles: circles,

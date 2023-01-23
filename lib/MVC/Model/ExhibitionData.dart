@@ -21,16 +21,16 @@ class Exhibition {
   String? gpsY;
 
   Exhibition(
-      {required this.seq,
-      required this.title,
-      required this.startDay,
-      required this.endDay,
-      required this.place,
-      required this.realName,
-      required this.area,
-      required this.thumb,
-      required this.gpsX,
-      required this.gpsY});
+      { this.seq,
+      this.title,
+      this.startDay,
+      this.endDay,
+      this.place,
+      this.realName,
+      this.area,
+      this.thumb,
+      this.gpsX,
+      this.gpsY});
 
   factory Exhibition.fromJson(Map<String, dynamic> json) {
     return Exhibition(
@@ -58,7 +58,6 @@ Future<LocationMarkerInfo> getGoogleOffices2() async {
   final response = await http.get(Uri.parse(googleLocationsURL));
   xml2Json.parse(utf8.decode(response.bodyBytes));
   var jsonString = xml2Json.toParker();
-  print("리스폰스 : 구글 어피스 : ${response}");
   if (response.statusCode == 200) {
     print("jsonString : ${jsonString}");
     return LocationMarkerInfo.fromJson(

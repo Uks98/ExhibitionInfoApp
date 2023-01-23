@@ -50,7 +50,8 @@ dependencies:
   intl:
   #neumorphic 버튼 디자인
   flutter_neumorphic: ^3.2.0
-
+  #상세페이지 이미지
+  carousel_slider:
 dev_dependencies:
   flutter_test:
     sdk: flutter

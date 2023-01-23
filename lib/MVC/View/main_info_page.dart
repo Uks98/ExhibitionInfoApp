@@ -11,7 +11,9 @@ import 'package:seoul_exhibition_info/MVC/Controller/calenderController.dart';
 import 'package:seoul_exhibition_info/MVC/Controller/map_controller.dart';
 import 'package:seoul_exhibition_info/MVC/Controller/normalInfoController.dart';
 import 'package:seoul_exhibition_info/MVC/Controller/row_option_widget.dart';
+import 'package:seoul_exhibition_info/MVC/Model/ExhibitionData.dart';
 import 'package:seoul_exhibition_info/MVC/Model/location_model.dart';
+import 'package:seoul_exhibition_info/MVC/View/detail_page.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 
@@ -21,7 +23,7 @@ class MainInfoPage extends StatelessWidget {
   RowOptionController _rowOptionController = Get.put(RowOptionController());
   CalenderController _calendarController = Get.put(CalenderController());
   //LocationController _locationController = Get.put(LocationController());
-  List<String> optionList = ["전시", "미술", "연극", "음악", "국악"];
+  List<String> optionList = ["전시", "예술", "연극", "음악", "국악"];
   int _colorIndex = 0;
 
 
@@ -79,21 +81,21 @@ Widget _scrollingList(ScrollController sc) {
           return rowOptionWidget(context);
         }
         final exIndex = _normalInfoController.mainExhibitionList[i];
-        return Column(
-          children: [
-
-            Container(
-              padding: const EdgeInsets.all(12.0),
-              child: MainExhibitionView(
-                context,
-                imageUrl: exIndex.thumb.toString(),
-                name: exIndex.title.toString(),
-                location: exIndex.place.toString(),
-                startDay: exIndex.startDay.toString(),
-                endDay: exIndex.endDay.toString(),
-              ),
+        return GestureDetector(
+          onTap: (){
+            Get.to(DetailPage(exhibition: Exhibition(seq: exIndex.seq),));
+          },
+          child: Container(
+            padding: const EdgeInsets.all(12.0),
+            child: MainExhibitionView(
+              context,
+              imageUrl: exIndex.thumb.toString(),
+              name: exIndex.title.toString(),
+              location: exIndex.place.toString(),
+              startDay: exIndex.startDay.toString(),
+              endDay: exIndex.endDay.toString(),
             ),
-          ],
+          ),
         );
       },
       separatorBuilder: (BuildContext context, int index) {

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:seoul_exhibition_info/MVC/Model/location_model.dart';
 import 'dart:convert' as convert;
 
@@ -15,6 +16,10 @@ class NormalInfoController extends GetxController{
   var mainExhibitionList = <Exhibition>[].obs;
   static var data;
   late BuildContext context;
+  DateTime now = DateTime.now().subtract(Duration(days: 30));
+  DateTime endNow = DateTime.now();
+  String get time => DateFormat("yyyyMMdd").format(now);
+  String get endTime => DateFormat("yyyyMMdd").format(endNow);
 
   getJsonFromXMLUrl(String url) async{
     final Xml2Json xml2Json = Xml2Json();
@@ -45,7 +50,7 @@ class NormalInfoController extends GetxController{
     // TODO: implement onInit
     super.onInit();
     LocationClass().getLocation(Get.context!);
-    getExhibitionData(startDay: "20221118",endDay: "20230117",place: "",sorts: "1",row: "10", keyword: "전시");
+    getExhibitionData(startDay: time,endDay: endTime,place: "",sorts: "1",row: "20", keyword: "전시");
   }
 }
 

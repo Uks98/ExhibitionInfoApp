@@ -15,7 +15,7 @@ class RowOptionController extends GetxController{
       print(time);
       _normalInfoController.getExhibitionData(startDay: time, endDay: endTime, place: "", keyword: "전시");
     }else if(index == 1){
-      _normalInfoController.getExhibitionData(startDay: time, endDay: endTime, place: "", keyword: "미술");
+      _normalInfoController.getExhibitionData(startDay: time, endDay: endTime, place: "", keyword: "예술");
     }else if(index == 2){
       _normalInfoController.getExhibitionData(startDay: time, endDay: endTime, place: "", keyword: "연극");
     }else if(index == 3){

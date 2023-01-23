@@ -50,7 +50,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
-            label: 'Home',
+            label: '홈',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
