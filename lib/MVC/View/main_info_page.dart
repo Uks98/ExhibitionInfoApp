@@ -83,7 +83,7 @@ Widget _scrollingList(ScrollController sc) {
         final exIndex = _normalInfoController.mainExhibitionList[i];
         return GestureDetector(
           onTap: (){
-            Get.to(DetailPage(exhibition: Exhibition(seq: exIndex.seq),));
+            Get.to(DetailPage(exhibition: Exhibition(seq: exIndex.seq)));
           },
           child: Container(
             padding: const EdgeInsets.all(12.0),

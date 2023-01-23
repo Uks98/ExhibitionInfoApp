@@ -20,38 +20,53 @@ class _DetailPageState extends State<DetailPage> {
   NormalInfoController normalInfoController = Get.put(NormalInfoController());
 
   List<String> _detailList = [];
-  Future<List<String>> returnToJson({required String seq,}) async {
+  var data;
+  Future<List<String>> returnToJson1({required String seq}) async {
     const String _key = "iwOI%2BU0JCUIMem0fddRQ9Y4Fj2E254wSmoXLGM3hVwqHiS8h12%2FqNozM62Kb5D4ihpeW4KWouAt%2B9djISlDJzw%3D%3D";
     //"http://www.culture.go.kr/openapi/rest/publicperformancedisplays/d/?seq=$seq&serviceKey=$_key"
-    final data = await normalInfoController.getJsonFromXMLUrl(
+     data = await normalInfoController.getJsonFromXMLUrl(
         "http://www.culture.go.kr/openapi/rest/publicperformancedisplays/d/?seq=$seq&serviceKey=$_key");
     String title = data["response"]["msgBody"]["perforInfo"]["title"];
     String place = data["response"]["msgBody"]["perforInfo"]["place"];
-    _detailList.addAll([title,place]);
-    print("ㄷㅌㅇ${_detailList}");
+    String placeAddr = data["response"]["msgBody"]["perforInfo"]["placeAddr"];
+    _detailList.addAll([title,place,placeAddr]);
+    //print("ㄷㅌㅇ${_detailList}");
     return _detailList;
   }
 
-  void getDetailList()async{
-
-    _detailList = await _detailController.returnToJson(seq: _exhibition.seq.toString());
-    print("디테일 리스트 ${_detailList[0]}");
-    print("디테일 리스트1 ${_detailController.detailList.length}");
-  }
 
   @override
   void initState() {
     super.initState();
-    getDetailList();
+    print(_exhibition.seq.toString());
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: _detailList.isEmpty ? Center(child: CircularProgressIndicator(),):GetX<DetailController>(
-          builder: (controller) {
-            return Text(controller.detailList[0].toString());
-          }
-        ),
+        body: Container(
+          width: 300,
+          height: 500,
+          child: FutureBuilder(
+              future: _detailController.returnToJson1(seq: _exhibition.seq.toString()),
+              //returnToJson1(seq: _exhibition.seq.toString()),
+              builder: (BuildContext context, AsyncSnapshot snapshot){
+                if(snapshot.hasData){
+                  return Column(
+                    children: [
+                      Obx(() => snapshot.data[0] != "" ? Text(snapshot.data[0]) :Text("데이터가 없습니다.") ,),
+                      Obx(() => snapshot.data[1] != "" ? Text(snapshot.data[1]) :Text("데이터가 없습니다.") ,),
+                      Obx(() => snapshot.data[2] != "" ? Text(snapshot.data[2]) :Text("데이터가 없습니다.") ,),
+                    ],
+                  );
+                }else if(!snapshot.hasData){
+                  return  Center(child: CircularProgressIndicator(color: Colors.black,));
+                }else if(!snapshot.hasError){
+                  return Text("데이터가 없어요");
+                }
+                return Center(child: CircularProgressIndicator(color: Colors.black,));
+              },
+              ),
+        )
     );
   }
 }
