@@ -26,15 +26,18 @@ class MainInfoPage extends StatelessWidget {
   List<String> optionList = ["전시", "예술", "연극", "음악", "국악"];
   int _colorIndex = 0;
 
-
-
-
 @override
 Widget build(BuildContext context) {
   return Scaffold(
     body: Stack(
       children: [
-        LocationPage(),
+        Container(
+            height: 400,
+            child: Column(
+              children: [
+                Expanded(child: LocationPage()),
+              ],
+            )),
         Padding(
           padding: EdgeInsets.only(left: 10.0, top: 30),
           child: NeumorphicButton(

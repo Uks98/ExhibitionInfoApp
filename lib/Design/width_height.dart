@@ -15,6 +15,8 @@ const double submitButtonHeight = 48.0;
 /// `all`
 /// 20.0
 const EdgeInsetsGeometry pagePadding = EdgeInsets.all(20.0);
+/// 'only left width'
+const EdgeInsetsGeometry leftWidth = EdgeInsets.only(left: 15.0);
 
 /// `symmetric`
 /// horizontal: 6

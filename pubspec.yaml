@@ -52,6 +52,8 @@ dependencies:
   flutter_neumorphic: ^3.2.0
   #상세페이지 이미지
   carousel_slider:
+  #로딩위젯
+  flutter_spinkit: ^5.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

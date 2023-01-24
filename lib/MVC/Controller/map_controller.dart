@@ -17,7 +17,6 @@ class _LocationPageState extends State<LocationPage> {
   int _count = 0;
   final Map<String, Marker> _markers = {};
   String get keyword => this.keyword;
-  List<Exhibition> locationData = []; // Futuer list<LocationMapData>에서 반환한 리스트 받아오기
   double latitude = LocationClass.latitude;
   double longitude = LocationClass.longitude;
   GoogleMapController? googleMapController;
@@ -65,38 +64,27 @@ class _LocationPageState extends State<LocationPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _onMapCreated;
     print("위도 : ${latitude}");
     print(longitude);
-    _onMapCreated;
   }
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-          children: [
-            Stack(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 400,
-                  child: latitude != null ?GoogleMap(
-                    // onCameraMove: ,
-                    //circles: circles,
-                    //내 위치 주변으로 원 둘레 생성
-                    myLocationEnabled: false,
-                    // 내 위치 활성화
-                    mapType: MapType.normal,
-                    onMapCreated: _onMapCreated,
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(latitude, longitude),
-                      zoom: 13,
-                    ),
-                    markers: _markers.values.toSet(),
-                  ) : Center(child: CircularProgressIndicator(),),
-                ),
-              ],
-            )
-          ],
-        );
+    return latitude != 0.0 ?Container(
+      width: MediaQuery.of(context).size.width,
+      child: GoogleMap(
+        // onCameraMove: ,
+        //circles: circles,
+        //내 위치 주변으로 원 둘레 생성
+        myLocationEnabled: false,
+        // 내 위치 활성화
+        mapType: MapType.normal,
+        onMapCreated: _onMapCreated,
+        initialCameraPosition: CameraPosition(
+          target: LatLng(latitude != "" ?latitude : 37.566535, longitude != "" ? longitude : 126.9779683,),
+          zoom: 13,
+        ),
+        markers: _markers.values.toSet(),
+      )): Center(child: CircularProgressIndicator());
   }
 }
