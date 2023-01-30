@@ -16,206 +16,236 @@ import 'package:seoul_exhibition_info/MVC/Model/location_model.dart';
 import 'package:seoul_exhibition_info/MVC/View/detail_page.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-
-class MainInfoPage extends StatelessWidget {
+class MainInfoPage extends StatefulWidget {
   MainInfoPage({Key? key}) : super(key: key);
-  NormalInfoController _normalInfoController = Get.put(NormalInfoController());
-  RowOptionController _rowOptionController = Get.put(RowOptionController());
-  CalenderController _calendarController = Get.put(CalenderController());
-  //LocationController _locationController = Get.put(LocationController());
-  List<String> optionList = ["전시", "예술", "연극", "음악", "국악"];
-  int _colorIndex = 0;
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: Stack(
-      children: [
-        Container(
-            height: 400,
-            child: Column(
-              children: [
-                Expanded(child: LocationPage()),
-              ],
-            )),
-        Padding(
-          padding: EdgeInsets.only(left: 10.0, top: 30),
-          child: NeumorphicButton(
-            onPressed: () {
-            _calendarController.show(context);
-            },
-            style: NeumorphicStyle(
-              color: Colors.grey[200],
-              shape: NeumorphicShape.flat,
-              boxShape: NeumorphicBoxShape.circle(),
-            ),
-            padding: const EdgeInsets.all(12.0),
-            child: Icon(
-              Icons.calendar_month_outlined,
-              color: Colors.grey[700],
+  @override
+  State<MainInfoPage> createState() => _MainInfoPageState();
+}
+
+class _MainInfoPageState extends State<MainInfoPage> {
+  NormalInfoController _normalInfoController = Get.put(NormalInfoController());
+//기본 정보를 담고 있는 컨트롤러
+  RowOptionController _rowOptionController = Get.put(RowOptionController());
+
+  CalenderController _calendarController = Get.put(CalenderController());
+ //캘린더 관련 컨트롤러
+  ScrollController _scrollController = ScrollController();
+ //스크롤 관련 컨트롤러
+  List<String> optionList = ["전시", "예술", "연극", "음악", "국악"];
+
+  int _colorIndex = 0;
+  int _rowIndex = 10; //api row query
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.offset >=
+          _scrollController.position.maxScrollExtent &&
+          !_scrollController.position.outOfRange) {
+        _rowIndex += 10;
+        print("${_rowIndex}밑바닥");
+      _normalInfoController.getExhibitionData(startDay: _normalInfoController.time, endDay: _normalInfoController.endTime, place: "", keyword: "",row: _rowIndex);
+      }
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          Container(
+              height: 400,
+              child: Column(
+                children: [
+                  Expanded(child: LocationPage()),
+                ],
+              )),
+          Padding(
+            padding: EdgeInsets.only(left: 10.0, top: 30),
+            child: NeumorphicButton(
+              onPressed: () {
+                _calendarController.show(context);
+              },
+              style: NeumorphicStyle(
+                color: Colors.grey[200],
+                shape: NeumorphicShape.flat,
+                boxShape: NeumorphicBoxShape.circle(),
+              ),
+              padding: const EdgeInsets.all(12.0),
+              child: Icon(
+                Icons.calendar_month_outlined,
+                color: Colors.grey[700],
+              ),
             ),
           ),
-        ),
-        SlidingUpPanel(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-          minHeight: 300,
-          maxHeight: MediaQuery
-              .of(context)
-              .size
-              .height - 50,
-          panelBuilder: (ScrollController sc) {
-            return _scrollingList(sc);
-          },
-        ),
-      ],
-    ),
-  );
-}
+          SlidingUpPanel(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            minHeight: 300,
+            maxHeight: MediaQuery.of(context).size.height - 50,
+            panelBuilder: (ScrollController sc) {
+              return _scrollingList(_scrollController);
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
 //패널 스크롤 관련 위젯 함수
-Widget _scrollingList(ScrollController sc) {
-  return GetX<NormalInfoController>(builder: (controller) {
-    return ListView.separated(
-      controller: sc,
-      itemCount: _normalInfoController.mainExhibitionList.length,
-      itemBuilder: (BuildContext context, int i) {
-        if (i == 0) {
-          return rowOptionWidget(context);
-        }
-        final exIndex = _normalInfoController.mainExhibitionList[i];
-        return GestureDetector(
-          onTap: (){
-            Get.to(DetailPage(exhibition: Exhibition(seq: exIndex.seq)));
-          },
-          child: Container(
-            padding: const EdgeInsets.all(12.0),
-            child: MainExhibitionView(
-              context,
-              imageUrl: exIndex.thumb.toString(),
-              name: exIndex.title.toString(),
-              location: exIndex.place.toString(),
-              startDay: exIndex.startDay.toString(),
-              endDay: exIndex.endDay.toString(),
+  Widget _scrollingList(ScrollController sc) {
+    return GetX<NormalInfoController>(builder: (controller) {
+      return ListView.separated(
+        controller: _scrollController,
+        itemCount: _normalInfoController.mainExhibitionList.length,
+        itemBuilder: (BuildContext context, int i) {
+          if (i == 0) {
+            return rowOptionWidget(context);
+          }
+          final exIndex = _normalInfoController.mainExhibitionList[i];
+          return GestureDetector(
+            onTap: () {
+              Get.to(
+                DetailPage(
+                  exhibition: Exhibition(
+                      seq: exIndex.seq, gpsX: exIndex.gpsX, gpsY: exIndex.gpsY),
+                ),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.all(12.0),
+              child: MainExhibitionView(
+                context,
+                imageUrl: exIndex.thumb.toString(),
+                name: exIndex.title.toString(),
+                location: exIndex.place.toString(),
+                startDay: exIndex.startDay.toString(),
+                endDay: exIndex.endDay.toString(),
+              ),
             ),
-          ),
-        );
-      },
-      separatorBuilder: (BuildContext context, int index) {
-        return Divider(
-          indent: 10,
-          endIndent: 10,
-          thickness: 1,
-        );
-      },
-    );
-  });
-}
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return Divider(
+            indent: 10,
+            endIndent: 10,
+            thickness: 1,
+          );
+        },
+      );
+    });
+  }
 
 //리스트 뷰로 그려지는 아이템
-Widget MainExhibitionView(BuildContext context,
-    {required String imageUrl,
+  Widget MainExhibitionView(BuildContext context,
+      {required String imageUrl,
       required String name,
       required String location,
       required String startDay,
       required String endDay}) {
-  final convertSt = DateTime.parse(startDay);
-  final convertEd = DateTime.parse(endDay);
-  final startDatF = DateFormat("yyyy년 MM월 dd일").format(convertSt);
-  final endDatF = DateFormat("yyyy년 MM월 dd일").format(convertEd);
-  return Container(
-    child: Row(
-      children: [
-        Image.network(
-          imageUrl,
-          width: 100,
-          height: 130,
-          fit: BoxFit.cover,
-        ),
-        SizedBox(
-          width: regularSpace,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 240,
-                child: Text(
-                  name,
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .subtitle1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              SizedBox(
-                height: regularSpace,
-              ),
-              Text(
-                location,
-                style: TextStyle(color: ColorBox.subFontColor, fontSize: 16),
-              ),
-              SizedBox(
-                height: smallSpace,
-              ),
-              Text(
-                "${startDatF} ~ ${endDatF}",
-                style: TextStyle(color: ColorBox.subFontColor, fontSize: 14),
-              ),
-            ],
+    final convertSt = DateTime.parse(startDay);
+    final convertEd = DateTime.parse(endDay);
+    final startDatF = DateFormat("yyyy년 MM월 dd일").format(convertSt);
+    final endDatF = DateFormat("yyyy년 MM월 dd일").format(convertEd);
+    return Container(
+      child: Row(
+        children: [
+          Image.network(
+            imageUrl,
+            width: 100,
+            height: 130,
+            fit: BoxFit.cover,
           ),
-        )
-      ],
-    ),
-  );
-}
-//바텀시트에 옵션 버튼을 나타내는 위젯
-Widget rowOptionWidget(context) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      SizedBox(width: smallSpace,),
-      Container(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width - 10,
-        height: 35,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                _colorIndex = index;
-                _rowOptionController.changeOption(index);
-              },
-              child: Container(
-                width: 80,
-                decoration: ShapeDecoration(
-                  color: index == _colorIndex ? Colors.black : Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                    side: BorderSide(width: 1, color: Colors.black),
+          SizedBox(
+            width: regularSpace,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 240,
+                  child: Text(
+                    name,
+                    style: Theme.of(context).textTheme.subtitle1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                child: Center(child: index == _colorIndex
-                    ? Text(
-                    optionList[index], style: TextStyle(color: Colors.white))
-                    : Text(optionList[index],)),
-              ),
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              width: smallSpace,
-            );
-          },
-          itemCount: optionList.length,
-        ),
-      )
-    ],
-  );
-}}
+                SizedBox(
+                  height: regularSpace,
+                ),
+                Text(
+                  location,
+                  style: TextStyle(color: ColorBox.subFontColor, fontSize: 16),
+                ),
+                SizedBox(
+                  height: smallSpace,
+                ),
+                Text(
+                  "${startDatF} ~ ${endDatF}",
+                  style: TextStyle(color: ColorBox.subFontColor, fontSize: 14),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+//바텀시트에 옵션 버튼을 나타내는 위젯
+  Widget rowOptionWidget(context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: smallSpace),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: smallSpace,
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width - 10,
+            height: 35,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    _colorIndex = index;
+                    _rowOptionController.changeOption(index);
+                  },
+                  child: Container(
+                    width: 80,
+                    decoration: ShapeDecoration(
+                      color: index == _colorIndex ? Colors.black : Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                        side: BorderSide(width: 1, color: Colors.black),
+                      ),
+                    ),
+                    child: Center(
+                        child: index == _colorIndex
+                            ? Text(optionList[index],
+                                style: TextStyle(color: Colors.white))
+                            : Text(
+                                optionList[index],
+                              )),
+                  ),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return SizedBox(
+                  width: smallSpace,
+                );
+              },
+              itemCount: optionList.length,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}

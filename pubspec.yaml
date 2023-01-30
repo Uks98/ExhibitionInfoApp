@@ -54,6 +54,9 @@ dependencies:
   carousel_slider:
   #로딩위젯
   flutter_spinkit: ^5.1.0
+  #url 이동,번호이동
+  url_launcher: ^6.1.8
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

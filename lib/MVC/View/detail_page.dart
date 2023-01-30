@@ -1,11 +1,16 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:seoul_exhibition_info/Design/ColorBox.dart';
 import 'package:seoul_exhibition_info/Design/width_height.dart';
 import 'package:seoul_exhibition_info/MVC/Controller/detail_controller.dart';
 import 'package:seoul_exhibition_info/MVC/Controller/normalInfoController.dart';
 import 'package:seoul_exhibition_info/MVC/Model/ExhibitionData.dart';
+import 'package:seoul_exhibition_info/MVC/Model/location_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailPage extends StatefulWidget {
   DetailPage({Key? key, required this.exhibition}) : super(key: key);
@@ -20,27 +25,39 @@ class _DetailPageState extends State<DetailPage> {
 
   DetailController _detailController = Get.put(DetailController());
   NormalInfoController normalInfoController = Get.put(NormalInfoController());
-
-  List<String> _detailList = [];
   var data;
 
-  Future<List<String>> returnToJson1({required String seq}) async {
-    const String _key =
-        "iwOI%2BU0JCUIMem0fddRQ9Y4Fj2E254wSmoXLGM3hVwqHiS8h12%2FqNozM62Kb5D4ihpeW4KWouAt%2B9djISlDJzw%3D%3D";
-    //"http://www.culture.go.kr/openapi/rest/publicperformancedisplays/d/?seq=$seq&serviceKey=$_key"
-    data = await normalInfoController.getJsonFromXMLUrl(
-        "http://www.culture.go.kr/openapi/rest/publicperformancedisplays/d/?seq=$seq&serviceKey=$_key");
-    String title = data["response"]["msgBody"]["perforInfo"]["title"];
-    String place = data["response"]["msgBody"]["perforInfo"]["place"];
-    String placeAddr = data["response"]["msgBody"]["perforInfo"]["placeAddr"];
-    _detailList.addAll([title, place, placeAddr]);
-    //print("ㄷㅌㅇ${_detailList}");
-    return _detailList;
-  }
+  late GoogleMapController _controller;
 
+  // 이 값은 지도가 시작될 때 첫 번째 위치입니다.
+  CameraPosition get _initialPosition =>
+  CameraPosition(
+      zoom: 15,
+      target: LatLng(double.parse(_exhibition.gpsY.toString(),),double.parse(_exhibition.gpsX.toString())));
+
+  // 지도 클릭 시 표시할 장소에 대한 마커 목록
+  final List<Marker> markers = [];
+
+  addMarker() async{
+    BitmapDescriptor markerbitmap = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(),
+      "lib/map_marker/search.png",
+    );
+    int id = Random().nextInt(100);
+    setState(() {
+      markers.add(Marker(
+        icon: markerbitmap,
+        onTap: (){
+          print(_exhibition.title);
+        },
+          position: LatLng(double.parse(_exhibition.gpsY.toString()),
+              double.parse(_exhibition.gpsX.toString())), markerId: MarkerId(id.toString())));
+    });
+  }
   @override
   void initState() {
     super.initState();
+    addMarker();
     print(_exhibition.seq.toString());
   }
 
@@ -48,12 +65,12 @@ class _DetailPageState extends State<DetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          leading: BackButton(color: ColorBox.subFontColor,),
           elevation: 1,
           backgroundColor: Colors.white,
         ),
         body: FutureBuilder(
-          future:
-              _detailController.returnToJson1(seq: _exhibition.seq.toString()),
+          future: _detailController.returnToJson1(seq: _exhibition.seq.toString()),
           //returnToJson1(seq: _exhibition.seq.toString()),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             final exhibitionData = snapshot.data;
@@ -65,7 +82,7 @@ class _DetailPageState extends State<DetailPage> {
                     Obx(() => Image.network(
                           snapshot.data[8].toString(),
                           width: MediaQuery.of(context).size.width,
-                          height: 350,
+                          height: 600,
                           fit: BoxFit.cover,
                         )),
                     Padding(
@@ -247,17 +264,68 @@ class _DetailPageState extends State<DetailPage> {
                           //전시관 정보 및 소개글 링크를 보여줍니다.
                           //[10] => 게시글 내용,
                           Text(
-                            "전시 소개",
+                            "전시 정보",
                             style: TextStyle(
                                 color: ColorBox.fontColor,
                                 fontSize: 24,
                                 fontFamily: "cusFont"),
                           ),
                           SizedBox(height: smallSpace),
+                          Container(
+                            width: MediaQuery.of(context).size.width -20,
+                            child: Obx(() => exhibitionData[10] != ""
+                                ? Text(
+                              exhibitionData[10],
+                              style: TextStyle(
+                                color: ColorBox.fontColor,
+                                fontSize: 18,
+                              ),
+                            )
+                                : Text(
+                              "해당 공연의 소개가 없습니다 :(",
+                              style: TextStyle(
+                                color: ColorBox.fontColor,
+                                fontSize: 18,
+                              ),
+                            ),
+                            ),
+                          ),
+                          SizedBox(height: smallSpace),
                           Row(
                             children: [
                               Icon(
-                                Icons.image_outlined,
+                                Icons.link_outlined,
+                                size: 30,
+                                color: ColorBox.subFontColor,
+                              ),
+                              SizedBox(
+                                width: smallSpace,
+                              ),
+                              //url 정보
+                            exhibitionData[6] != "" ? GestureDetector(
+                              onTap: ()=>_detailController.goWeb(exhibitionData[6]),
+                              child: Text(
+                                    "공연 웹사이트로 이동하기",
+                                    style: TextStyle(
+                                      color: ColorBox.fontColor,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                            )
+                                    : Text(
+                                  "공연 웹사이트가 없습니다. :(",
+                                  style: TextStyle(
+                                    color: ColorBox.fontColor,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          SizedBox(height: smallSpace),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.call_outlined,
                                 size: 30,
                                 color: ColorBox.subFontColor,
                               ),
@@ -265,14 +333,17 @@ class _DetailPageState extends State<DetailPage> {
                                 width: smallSpace,
                               ),
                               //가격 정보
-                              Obx(() => exhibitionData[11] != ""
-                                    ? Text(
-                                  exhibitionData[11],
+                              Obx(() => exhibitionData[7] != ""
+                                    ? GestureDetector(
+                                onTap: () => _detailController.launchPhoneURL(exhibitionData[7]),
+                                      child: Text(
+                                  exhibitionData[7],
                                   style: TextStyle(
-                                    color: ColorBox.fontColor,
-                                    fontSize: 18,
+                                      color: ColorBox.fontColor,
+                                      fontSize: 18,
                                   ),
-                                )
+                                ),
+                                    )
                                     : Text(
                                   "데이터가 없습니다.",
                                   style: TextStyle(
@@ -283,9 +354,34 @@ class _DetailPageState extends State<DetailPage> {
                               ),
                             ],
                           ),
+                          SizedBox(height: smallSpace,),
+                          Text(
+                            "위치 안내",
+                            style: TextStyle(
+                                color: ColorBox.fontColor,
+                                fontSize: 24,
+                                fontFamily: "cusFont"),
+                          ),
+                          SizedBox(height: smallSpace,),
                         ],
                       ),
                     ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 300,
+                      child: GoogleMap(
+                        trafficEnabled: true,
+                        initialCameraPosition: _initialPosition,
+                        mapType: MapType.normal,
+                        onMapCreated: (controller) {
+                          setState(() {
+                            _controller = controller;
+                          });
+                        },
+                        markers: Set.from(markers)
+                      ),
+                    ),
+                    SizedBox(height: largeSpace,),
                   ],
                 ),
               );

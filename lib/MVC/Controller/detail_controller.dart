@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:seoul_exhibition_info/MVC/Controller/normalInfoController.dart';
 import 'package:seoul_exhibition_info/MVC/Model/ExhibitionDetailModel.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailController extends GetxController {
   var detailList = <String>[].obs;
@@ -31,6 +32,24 @@ class DetailController extends GetxController {
     detailList.addAll([title,startDate,endDate,place,area,price,url,phone,imaUrl,placeAddr,content,type]);
     return detailList;
   }
+  //공연 전화 걸기 함수
+  void launchPhoneURL(String phoneNumber) async {
+    final s = phoneNumber.toString().replaceAll("-", "");
+    print(s);
+    String url = 'tel:' + phoneNumber;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+  //웹사이트 이동 함수
+  void goWeb(String ex){
+    launchUrl(
+      Uri.parse(ex.toString()),
+    );
+  }
+
 
   @override
   void onInit() {

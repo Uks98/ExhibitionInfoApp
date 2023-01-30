@@ -23,7 +23,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   int _currentIndex = 0; // 바텀 네비게이션 현재 index
   List<Widget> appPages = [
     MainInfoPage(),
-    LocationPage(),
+    //LocationPage(),
     Text("data"),
   ]; // 앱 화면들
   @override
