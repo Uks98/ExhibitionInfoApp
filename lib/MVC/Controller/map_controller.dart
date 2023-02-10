@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:seoul_exhibition_info/MVC/Controller/normalInfoController.dart';
 import 'package:seoul_exhibition_info/MVC/Model/ExhibitionData.dart' as exhibitionData;
 import 'package:seoul_exhibition_info/MVC/Model/ExhibitionData.dart';
 import 'package:seoul_exhibition_info/MVC/Model/location_model.dart';
@@ -20,6 +22,7 @@ class _LocationPageState extends State<LocationPage> {
   double latitude = LocationClass.latitude;
   double longitude = LocationClass.longitude;
   GoogleMapController? googleMapController;
+  NormalInfoController _normalInfoController = Get.put(NormalInfoController());
   Completer<GoogleMapController> _completer = Completer(); //카메라 위치를 바꾸기 위한 변수
   Future<void> animateTo(double lat, double lng) async {
     final c = await _completer.future;
@@ -39,7 +42,8 @@ class _LocationPageState extends State<LocationPage> {
       for (final office in googleOffices1.offices1!) {
         final marker = Marker(
           icon: markerbitmap,
-          onTap: () {},
+          onTap: ()=>
+             getMarkerInfo(office.title.toString(),office.area.toString(),office.thumb.toString()),
           markerId: MarkerId((_count += 1).toString()),
           position: LatLng(double.parse(office.gpsY.toString()),
               double.parse(office.gpsX.toString())),
@@ -47,6 +51,41 @@ class _LocationPageState extends State<LocationPage> {
         _markers[(_count += 1).toString()] = marker;
       }
     }
+    );
+  }
+
+  void getMarkerInfo(String title,String content,String title2){
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: true,
+      shape: const RoundedRectangleBorder(
+          borderRadius:
+          BorderRadius.vertical(top: Radius.circular(16))),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.5,
+        minChildSize: 0.4,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (_, controller) => Column(
+          children: [
+            Icon(
+              Icons.remove,
+              color: Colors.grey[600],
+            ),
+            Expanded(
+              child: Column(
+                children: [
+
+                  Text(title.toString()),
+                  Text(content.toString()),
+                  Text(title2.toString()),
+                ],
+              )
+            ),
+          ],
+        ),
+      ),
     );
   }
 

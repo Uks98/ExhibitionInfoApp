@@ -16,40 +16,17 @@ import 'package:seoul_exhibition_info/MVC/Model/location_model.dart';
 import 'package:seoul_exhibition_info/MVC/View/detail_page.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class MainInfoPage extends StatefulWidget {
+class MainInfoPage extends StatelessWidget {
   MainInfoPage({Key? key}) : super(key: key);
-
-  @override
-  State<MainInfoPage> createState() => _MainInfoPageState();
-}
-
-class _MainInfoPageState extends State<MainInfoPage> {
-  NormalInfoController _normalInfoController = Get.put(NormalInfoController());
-//기본 정보를 담고 있는 컨트롤러
+  NormalInfoController _normalInfoController = Get.put(NormalInfoController());//기본 정보를 담고 있는 컨트롤러
   RowOptionController _rowOptionController = Get.put(RowOptionController());
+  CalenderController _calendarController = Get.put(CalenderController()); //캘린더 관련 컨트롤러
 
-  CalenderController _calendarController = Get.put(CalenderController());
- //캘린더 관련 컨트롤러
-  ScrollController _scrollController = ScrollController();
- //스크롤 관련 컨트롤러
-  List<String> optionList = ["전시", "예술", "연극", "음악", "국악"];
-
+  //LocationController _locationController = Get.put(LocationController());
+  List<String> optionList = ["전시", "예술", "연극", "음악", "국악"]; //선택 옵션들의 리스트
   int _colorIndex = 0;
-  int _rowIndex = 10; //api row query
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _scrollController.addListener(() {
-      if (_scrollController.offset >=
-          _scrollController.position.maxScrollExtent &&
-          !_scrollController.position.outOfRange) {
-        _rowIndex += 10;
-        print("${_rowIndex}밑바닥");
-      _normalInfoController.getExhibitionData(startDay: _normalInfoController.time, endDay: _normalInfoController.endTime, place: "", keyword: "",row: _rowIndex);
-      }
-    });
-  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,10 +60,10 @@ class _MainInfoPageState extends State<MainInfoPage> {
           SlidingUpPanel(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-            minHeight: 300,
+            minHeight: 250,
             maxHeight: MediaQuery.of(context).size.height - 50,
             panelBuilder: (ScrollController sc) {
-              return _scrollingList(_scrollController);
+              return _scrollingList(_rowOptionController.scrollController);
             },
           ),
         ],
@@ -98,7 +75,7 @@ class _MainInfoPageState extends State<MainInfoPage> {
   Widget _scrollingList(ScrollController sc) {
     return GetX<NormalInfoController>(builder: (controller) {
       return ListView.separated(
-        controller: _scrollController,
+        controller: _rowOptionController.scrollController,
         itemCount: _normalInfoController.mainExhibitionList.length,
         itemBuilder: (BuildContext context, int i) {
           if (i == 0) {

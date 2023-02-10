@@ -15,6 +15,7 @@ import '../Model/ExhibitionData.dart';
 class NormalInfoController extends GetxController{
   var mainExhibitionList = <Exhibition>[].obs;
   static var data;
+
   late BuildContext context;
   DateTime now = DateTime.now().subtract(Duration(days: 30));
   DateTime endNow = DateTime.now();
@@ -51,5 +52,6 @@ class NormalInfoController extends GetxController{
     LocationClass().getLocation(Get.context!);
     getExhibitionData(startDay: time,endDay: endTime,place: "",sorts: "1",row: 10, keyword: "");
   }
+
 }
 

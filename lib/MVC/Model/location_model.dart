@@ -35,7 +35,7 @@ class LocationClass{
     }
     }
 
-  void toastMessage(BuildContext context,String text){
+  static void toastMessage(BuildContext context,String text){
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text),backgroundColor: Colors.black,));
   }
 }

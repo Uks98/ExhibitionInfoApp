@@ -32,6 +32,7 @@ class Exhibition {
       this.gpsX,
       this.gpsY});
 
+  //marker에 필요한 factory method
   factory Exhibition.fromJson(Map<String, dynamic> json) {
     return Exhibition(
         seq: json["seq"].toString(),
@@ -46,6 +47,8 @@ class Exhibition {
         gpsY: json["gpsY"].toString());
   }
 }
+
+//로케이션 페이지 데이터 인터페이스
 
 Future<LocationMarkerInfo> getGoogleOffices2() async {
   NormalInfoController normalInfoController = NormalInfoController();
