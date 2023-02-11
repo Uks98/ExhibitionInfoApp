@@ -40,6 +40,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {
+            //pu
             _currentIndex = index;
             print(_currentIndex);
           });
