@@ -24,7 +24,9 @@ class MainInfoPage extends StatelessWidget {
 
   //LocationController _locationController = Get.put(LocationController());
   List<String> optionList = ["전시", "예술", "연극", "음악", "국악"]; //선택 옵션들의 리스트
+  List<String> locationList = ["서울","부산","전북","울산"]; // 지역 리스트
   int _colorIndex = 0;
+  int _locationIndex = 0;
 
 
   @override
@@ -41,26 +43,36 @@ class MainInfoPage extends StatelessWidget {
               )),
           Padding(
             padding: EdgeInsets.only(left: 10.0, top: 30),
-            child: NeumorphicButton(
-              onPressed: () {
-                _calendarController.show(context);
-              },
-              style: NeumorphicStyle(
-                color: Colors.grey[200],
-                shape: NeumorphicShape.flat,
-                boxShape: NeumorphicBoxShape.circle(),
-              ),
-              padding: const EdgeInsets.all(12.0),
-              child: Icon(
-                Icons.calendar_month_outlined,
-                color: Colors.grey[700],
-              ),
+            child: Row(
+              children: [
+                //달력 버튼 위젯
+                NeumorphicButton(
+                  onPressed: () {
+                    _calendarController.show(context);
+                  },
+                  style: NeumorphicStyle(
+                    color: Colors.grey[200],
+                    lightSource:LightSource.bottom ,
+                    shape: NeumorphicShape.flat,
+                    boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(12)),
+                  ),
+                  padding: const EdgeInsets.all(12.0),
+                  child: Icon(
+                    Icons.calendar_month_outlined,
+                    color: Colors.grey[800],
+                  ),
+                ),
+                findLocations(context),
+              ],
             ),
           ),
           SlidingUpPanel(
+              //parallaxEnabled : false,
+             // isDraggable : false,
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-            minHeight: 250,
+            //패널 최소 크기
+            minHeight: 300,
             maxHeight: MediaQuery.of(context).size.height - 50,
             panelBuilder: (ScrollController sc) {
               return _scrollingList(_rowOptionController.scrollController);
@@ -223,6 +235,51 @@ class MainInfoPage extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+
+  // 맵 위치 위젯
+  Widget findLocations(BuildContext context){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: smallSpace,
+        ),
+        Container(
+          width: 300,
+          height: 40,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  _locationIndex = index;
+                },
+                child:  NeumorphicButton(
+                  onPressed: () {
+                  },
+                  style: NeumorphicStyle(
+                    depth: 8,
+                    color: Colors.grey[200],
+                    shape: NeumorphicShape.convex,
+                    lightSource:LightSource.top ,
+                    boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(12)),
+                  ),
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(locationList[index],style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey[800]),)
+                ),
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) {
+              return SizedBox(
+                width: smallSpace,
+              );
+            },
+            itemCount: locationList.length,
+          ),
+        )
+      ],
     );
   }
 }

@@ -46,16 +46,16 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
+            icon: Icon(Icons.home_filled),
             label: '홈',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
+            icon: Icon(Icons.star),
+            label: '즐겨찾기',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
+            icon: Icon(Icons.supervised_user_circle),
+            label: '마이 페이지',
           ),
         ],
       ),

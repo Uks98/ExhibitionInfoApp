@@ -48,14 +48,14 @@ class Exhibition {
   }
 }
 
-//로케이션 페이지 데이터 인터페이스
+//로케이션 페이지 데이터 인터페이스 (마커)
 
 Future<LocationMarkerInfo> getGoogleOffices2() async {
   NormalInfoController normalInfoController = NormalInfoController();
   String _key = "iwOI%2BU0JCUIMem0fddRQ9Y4Fj2E254wSmoXLGM3hVwqHiS8h12%2FqNozM62Kb5D4ihpeW4KWouAt%2B9djISlDJzw%3D%3D";
 // 위도 경도가 서로 다름..
   final Xml2Json xml2Json = Xml2Json();
-  var googleLocationsURL = "http://www.culture.go.kr/openapi/rest/publicperformancedisplays/period?from=20221118&to=20230117&cPage=1&rows=31&place=서울&gpsxfrom=&gpsyfrom=&gpsxto=&gpsyto=&keyword=&sortStdr=1&serviceKey=iwOI%2BU0JCUIMem0fddRQ9Y4Fj2E254wSmoXLGM3hVwqHiS8h12%2FqNozM62Kb5D4ihpeW4KWouAt%2B9djISlDJzw%3D%3D";
+  var googleLocationsURL = "http://www.culture.go.kr/openapi/rest/publicperformancedisplays/area?serviceKey=$_key&sido=서울&rows=20";
   print(googleLocationsURL);
 
   final response = await http.get(Uri.parse(googleLocationsURL));

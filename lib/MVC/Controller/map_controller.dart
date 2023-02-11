@@ -39,7 +39,7 @@ class _LocationPageState extends State<LocationPage> {
     final googleOffices1 = await exhibitionData.getGoogleOffices2();
     setState(() {
       _markers.clear();
-      for (final office in googleOffices1.offices1!) {
+        for (final office in googleOffices1.offices1!) {
         final marker = Marker(
           icon: markerbitmap,
           onTap: ()=>
