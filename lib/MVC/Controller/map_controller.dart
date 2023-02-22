@@ -42,9 +42,9 @@ class _LocationPageState extends State<LocationPage> {
         for (final office in googleOffices1.offices1!) {
         final marker = Marker(
           icon: markerbitmap,
-          onTap: ()=>
-             getMarkerInfo(office.title.toString(),office.area.toString(),office.thumb.toString()),
+          onTap: ()=> getMarkerInfo(office.title.toString(),office.area.toString(),office.thumb.toString()),
           markerId: MarkerId((_count += 1).toString()),
+          //여기 수정해서 맵 이동 구현해야함
           position: LatLng(double.parse(office.gpsY.toString()),
               double.parse(office.gpsX.toString())),
         );
@@ -76,7 +76,6 @@ class _LocationPageState extends State<LocationPage> {
             Expanded(
               child: Column(
                 children: [
-
                   Text(title.toString()),
                   Text(content.toString()),
                   Text(title2.toString()),

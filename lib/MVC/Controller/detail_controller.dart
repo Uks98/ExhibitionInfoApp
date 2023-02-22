@@ -55,6 +55,6 @@ class DetailController extends GetxController {
   void onInit() {
     super.onInit();
     returnToJson1(seq: "");
-    print(data);
+    //print(data);
   }
 }

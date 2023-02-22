@@ -62,7 +62,7 @@ Future<LocationMarkerInfo> getGoogleOffices2() async {
   xml2Json.parse(utf8.decode(response.bodyBytes));
   var jsonString = xml2Json.toParker();
   if (response.statusCode == 200) {
-    print("jsonString : ${jsonString}");
+    //print("jsonString : ${jsonString}");
     return LocationMarkerInfo.fromJson(
         jsonDecode(jsonString)); //한글깨짐수정
   } else {

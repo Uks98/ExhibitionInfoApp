@@ -15,7 +15,6 @@ class RowOptionController extends GetxController{
   String get time => DateFormat("yyyyMMdd").format(now);
   String get endTime => DateFormat("yyyyMMdd").format(endNow);
   void changeOption(int index){
-
     print("내 시간 : ${time}");
     if(index == 0){
       _normalInfoController.getExhibitionData(startDay: time, endDay: endTime, place: "", keyword: "전시");

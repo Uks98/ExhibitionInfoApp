@@ -16,18 +16,20 @@ import 'package:seoul_exhibition_info/MVC/Model/location_model.dart';
 import 'package:seoul_exhibition_info/MVC/View/detail_page.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import '../Controller/lcationDetailController.dart';
+
 class MainInfoPage extends StatelessWidget {
   MainInfoPage({Key? key}) : super(key: key);
   NormalInfoController _normalInfoController = Get.put(NormalInfoController());//기본 정보를 담고 있는 컨트롤러
   RowOptionController _rowOptionController = Get.put(RowOptionController());
   CalenderController _calendarController = Get.put(CalenderController()); //캘린더 관련 컨트롤러
-
+  LocationDetailController _locationDetailController = Get.put(LocationDetailController());
   //LocationController _locationController = Get.put(LocationController());
   List<String> optionList = ["전시", "예술", "연극", "음악", "국악"]; //선택 옵션들의 리스트
   List<String> locationList = ["서울","부산","전북","울산"]; // 지역 리스트
   int _colorIndex = 0;
   int _locationIndex = 0;
-
+  
 
   @override
   Widget build(BuildContext context) {
@@ -238,7 +240,7 @@ class MainInfoPage extends StatelessWidget {
     );
   }
 
-  // 맵 위치 위젯
+  // 맵 위치 위젯[서울..부산]
   Widget findLocations(BuildContext context){
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -258,6 +260,11 @@ class MainInfoPage extends StatelessWidget {
                 },
                 child:  NeumorphicButton(
                   onPressed: () {
+                    if(index == 0 ){
+                      _locationDetailController.getExhibitionDetailData(keyword: '서울');
+                    }else{
+                      _locationDetailController.getExhibitionDetailData(keyword: '부산');
+                    }
                   },
                   style: NeumorphicStyle(
                     depth: 8,
