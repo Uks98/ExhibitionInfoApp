@@ -32,7 +32,7 @@ class _DetailPageState extends State<DetailPage> {
   // 이 값은 지도가 시작될 때 첫 번째 위치입니다.
   CameraPosition get _initialPosition =>
   CameraPosition(
-      zoom: 15,
+      zoom: 9,
       target: LatLng(double.parse(_exhibition.gpsY.toString(),),double.parse(_exhibition.gpsX.toString())));
 
   // 지도 클릭 시 표시할 장소에 대한 마커 목록
