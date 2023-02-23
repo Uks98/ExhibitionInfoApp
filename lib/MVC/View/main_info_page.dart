@@ -73,7 +73,7 @@ class MainInfoPage extends StatelessWidget {
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20), topRight: Radius.circular(20)),
             //패널 최소 크기
-            minHeight: 200,
+            minHeight: 300,
             maxHeight: MediaQuery.of(context).size.height - 50,
             panelBuilder: (ScrollController sc) {
               return _scrollingList(_rowOptionController.scrollController);

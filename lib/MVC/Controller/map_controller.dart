@@ -10,6 +10,7 @@ import 'package:seoul_exhibition_info/MVC/Model/ExhibitionData.dart'
 import 'package:seoul_exhibition_info/MVC/Model/ExhibitionData.dart';
 import 'package:seoul_exhibition_info/MVC/Model/location_model.dart';
 
+import '../../Design/ColorBox.dart';
 import '../../Design/width_height.dart';
 
 class LocationPage extends StatefulWidget {
@@ -62,7 +63,7 @@ class _LocationPageState extends State<LocationPage> {
         final marker = Marker(
           icon: markerbitmap,
           onTap: () => getMarkerInfo(office.title.toString(),
-              office.area.toString(), office.thumb.toString()),
+              office.place.toString(), office.thumb.toString(),office.startDay.toString(),office.endDay.toString()),
           markerId: MarkerId((_count.toString().hashCode).toString()),
           position: LatLng(double.parse(office.gpsY.toString()),
               double.parse(office.gpsX.toString())),
@@ -150,7 +151,7 @@ class _LocationPageState extends State<LocationPage> {
     );
   }
 
-  void getMarkerInfo(String title, String content, String title2) {
+  void getMarkerInfo(String title, String content,String thumb,String startDay,String endDay) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -158,8 +159,8 @@ class _LocationPageState extends State<LocationPage> {
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.5,
-        minChildSize: 0.4,
+        initialChildSize: 0.43, //바텀시트 높이조절
+        minChildSize: 0.3,
         maxChildSize: 0.95,
         expand: false,
         builder: (_, controller) => Column(
@@ -169,11 +170,50 @@ class _LocationPageState extends State<LocationPage> {
               color: Colors.grey[600],
             ),
             Expanded(
-                child: Column(
+                child: Row(
               children: [
-                Text(title.toString()),
-                Text(content.toString()),
-                Text(title2.toString()),
+                Row(
+                  children: [
+                    SizedBox(width: regularSpace,),
+                    Container(
+                      width: 140,
+                      height: 200,
+                      child: Image.network(thumb,fit: BoxFit.contain,),
+                    ),
+                    SizedBox(width: smallSpace + 10,),
+                    Container(
+                      width: 200,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 240,
+                            child: Text(
+                              title,
+                              style: Theme.of(context).textTheme.headline6,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          SizedBox(
+                            height: regularSpace,
+                          ),
+                          Text(
+                            content,
+                            style: TextStyle(color: ColorBox.subFontColor, fontSize: 16),
+                          ),
+                          SizedBox(
+                            height: smallSpace,
+                          ),
+                          Text(
+                            "${startDay} ~ ${endDay}",
+                            style: TextStyle(color: ColorBox.subFontColor, fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ],
             )),
           ],
