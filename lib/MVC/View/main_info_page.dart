@@ -42,7 +42,7 @@ class MainInfoPage extends StatelessWidget {
                 ],
               )),
           Padding(
-            padding: EdgeInsets.only(left: 10.0, top: 30),
+            padding: EdgeInsets.only(left: 10.0, top: 15),
             child: Row(
               children: [
                 //달력 버튼 위젯
